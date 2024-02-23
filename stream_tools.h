@@ -146,7 +146,6 @@ void adjust_width(stream<ap_uint<IN_BIT> > &in, stream<ap_uint<OUT_BIT> > &out,
                   "For ExpandWidth, OutStreamW mod InStreamW is not 0");
 
     if (IN_BIT > OUT_BIT) {
-        // 减小位宽
         const unsigned PARTS = IN_BIT / OUT_BIT;
 
         for (unsigned rep = 0; rep < reps * IN_NUMS; rep++) {
@@ -162,7 +161,6 @@ void adjust_width(stream<ap_uint<IN_BIT> > &in, stream<ap_uint<OUT_BIT> > &out,
         }
 
     } else if (IN_BIT == OUT_BIT) {
-        // 位宽不变
         // straight-through copy
         for (unsigned int i = 0; i < IN_NUMS * reps; i++) {
 #pragma HLS PIPELINE II = 1
@@ -170,7 +168,6 @@ void adjust_width(stream<ap_uint<IN_BIT> > &in, stream<ap_uint<OUT_BIT> > &out,
             out.write(e);
         }
     } else {
-        // 增大位宽
         const unsigned PARTS = OUT_BIT / IN_BIT;
         const unsigned OUT_NUMS = IN_NUMS / PARTS;
         ap_uint<OUT_BIT> buffer;
@@ -333,7 +330,7 @@ void StreamingDataWidthConverter_128to24(hls::stream<ap_uint<128> > &in,
     const unsigned int totalIters = NumInWords * 128 / 24 * numReps;
     const unsigned int loop_Iters = NumInWords * 128 / 24 * 1;
     ap_uint<336> ei = 0;
-    ap_uint<4> o = 0; //读完16个自动复位
+    ap_uint<4> o = 0; 
     for (unsigned int t = 0; t < totalIters; t++) {
 #pragma HLS LOOP_TRIPCOUNT min=loop_Iters max=loop_Iters
 #pragma HLS PIPELINE II = 1
@@ -359,7 +356,7 @@ void StreamingDataWidthConverter_64to24(hls::stream<ap_uint<64> > &in,
     const unsigned int totalIters = NumInWords * 64 / 24 * numReps;
     const unsigned int loop_Iters = NumInWords * 64 / 24 * 1;
     ap_uint<80> ei = 0;
-    ap_uint<3> o = 0; //读完8个自动复位
+    ap_uint<3> o = 0; 
     for (unsigned int t = 0; t < totalIters; t++) {
 #pragma HLS LOOP_TRIPCOUNT min=loop_Iters max=loop_Iters
 #pragma HLS PIPELINE II = 1
@@ -397,9 +394,7 @@ void append_zero(stream<ap_uint<IN_BIT> > &in, const unsigned n) {
         in.write(0);
     }
 }
-/**
- * 从一个流中一定数量的数据move到另一个流
- */
+
 template <unsigned IN_BIT>
 void stream_move(stream<ap_uint<IN_BIT> > &in, stream<ap_uint<IN_BIT> > &out,
                  const unsigned n) {
@@ -410,10 +405,7 @@ void stream_move(stream<ap_uint<IN_BIT> > &in, stream<ap_uint<IN_BIT> > &out,
     }
 }
 
-/**
- * 多路选择器
- * 将一路输入输出到三路中的一路
- */
+
 template <unsigned BIT, unsigned NumLines>
 void demux_stream3(stream<ap_uint<BIT> > &in, stream<ap_uint<BIT> > &out1,
                    stream<ap_uint<BIT> > &out2, stream<ap_uint<BIT> > &out3,
@@ -445,7 +437,6 @@ void adjust_width_var(stream<ap_uint<IN_BIT> > &in,
                   "For ExpandWidth, OutStreamW mod InStreamW is not 0");
 
     if (IN_BIT > OUT_BIT) {
-        // 减小位宽
         const unsigned PARTS = IN_BIT / OUT_BIT;
 
         for (unsigned rep = 0; rep < reps * in_nums; rep++) {
@@ -461,7 +452,6 @@ void adjust_width_var(stream<ap_uint<IN_BIT> > &in,
         }
 
     } else if (IN_BIT == OUT_BIT) {
-        // 位宽不变
         // straight-through copy
         for (unsigned int i = 0; i < in_nums * reps; i++) {
 #pragma HLS PIPELINE II = 1
@@ -469,7 +459,7 @@ void adjust_width_var(stream<ap_uint<IN_BIT> > &in,
             out.write(e);
         }
     } else {
-        // 增大位宽
+
         const unsigned PARTS = OUT_BIT / IN_BIT;
         const unsigned out_nums = in_nums / PARTS;
         ap_uint<OUT_BIT> buffer;
@@ -486,11 +476,6 @@ void adjust_width_var(stream<ap_uint<IN_BIT> > &in,
     }
 }
 
-/**
- * 2路选择器 并且调整数据位宽
- * 将一路输入 输出到两路中的一路
- *
- */
 template <unsigned IN_BIT, unsigned OUT0_BIT, unsigned OUT1_BIT>
 void demux_stream1to2_adj(stream<ap_uint<IN_BIT> > &in,
                           stream<ap_uint<OUT0_BIT> > &out0,

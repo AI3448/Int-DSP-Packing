@@ -441,7 +441,6 @@ void streamBnRelu(stream<ap_uint<PE * M_BIT * 2>> &in,
       }
 }
 
-// 节省输出并行度，仅做部分输出展开，节省DSP资源
 template <unsigned OUT_ROW, unsigned OUT_COL, unsigned OUT_CH, unsigned M_BIT,
           unsigned OUT_BIT, unsigned INC_BIT, unsigned BIAS_BIT,
           unsigned IN_BIT, unsigned W_BIT, unsigned L_SHIFT, unsigned INFOLD, unsigned PE>
@@ -886,7 +885,7 @@ void convDSPLUTOpt(
 
 template <unsigned IN_ROW, unsigned IN_COL, unsigned IN_CH, unsigned IN_BIT,
           unsigned OUT_CH,
-          unsigned OUT_BIT, // 量化激活后的位宽
+          unsigned OUT_BIT,
           unsigned W_BIT, unsigned M_BIT, unsigned INC_BIT, unsigned BIAS_BIT,
           unsigned SIMD, unsigned CASCADE, unsigned IN_PE, unsigned PE,
           unsigned L_SHIFT>
@@ -935,7 +934,6 @@ void conv3x3_bn_act_DSPopt_l4567_int(
 
   const unsigned INTER_ROW = IN_ROW + 2;
   const unsigned INTER_COL = IN_COL + 2;
-  // 暂时认为输入 输出维度不变
   const unsigned OUT_ROW = IN_ROW;
   const unsigned OUT_COL = IN_COL;
   const unsigned INFOLD = 3 * IN_CH / SIMD;
